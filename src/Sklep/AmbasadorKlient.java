@@ -273,6 +273,7 @@ public class AmbasadorKlient extends NullFederateAmbassador {
                 receiveInfo );
     }
 
+    /*
     @Override
     public void receiveInteraction( InteractionClassHandle interactionClass,
                                     ParameterHandleValueMap theParameters,
@@ -319,7 +320,7 @@ public class AmbasadorKlient extends NullFederateAmbassador {
 
         log( builder.toString() );
     }
-
+*/
     @Override
     public void removeObjectInstance( ObjectInstanceHandle theObject,
                                       byte[] tag,
