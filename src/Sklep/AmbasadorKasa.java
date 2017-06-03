@@ -7,4 +7,22 @@ import hla.rti1516e.NullFederateAmbassador;
  */
 public class AmbasadorKasa extends NullFederateAmbassador {
 
+    FederatKasa federate;
+
+
+    //----------------------------------------------------------
+    //                      CONSTRUCTORS
+    //----------------------------------------------------------
+    public AmbasadorKasa (FederatKasa federate)
+    {
+        this.federate=federate;
+    }
+    //----------------------------------------------------------
+    //                    INSTANCE METHODS
+    //----------------------------------------------------------
+    private void log( String message )
+    {
+        System.out.println( "FederateAmbassador: " + message );
+    }
+
 }
