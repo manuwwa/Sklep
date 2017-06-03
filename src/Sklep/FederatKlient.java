@@ -128,12 +128,10 @@ public class FederatKlient {
         try
         {
             URL[] modules = new URL[]{
-                    (new File("foms/RestaurantProcesses.xml")).toURI().toURL(),
-                    (new File("foms/RestaurantFood.xml")).toURI().toURL(),
-                    (new File("foms/RestaurantDrinks.xml")).toURI().toURL()
+                    (new File("foms/ModelFom.xml")).toURI().toURL(),
             };
 
-            rtiamb.createFederationExecution( "ExampleFederation", modules );
+            rtiamb.createFederationExecution( "FederatKlient", modules );
             log( "Created Federation" );
         }
         catch( FederationExecutionAlreadyExists exists )
@@ -151,12 +149,12 @@ public class FederatKlient {
         // 4. join the federation //
         ////////////////////////////
         URL[] joinModules = new URL[]{
-                (new File("foms/RestaurantSoup.xml")).toURI().toURL()
+                (new File("foms/ModelFom.xml")).toURI().toURL()
         };
 
         rtiamb.joinFederationExecution( federateName,            // name for the federate
-                "ExampleFederateType",   // federate type
-                "ExampleFederation",     // name of federation
+                "FederatKlientType",   // federate type
+                "FederatKlient",     // name of federation
                 joinModules );           // modules we want to add
 
         log( "Joined Federation as " + federateName );
