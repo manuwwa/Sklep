@@ -59,10 +59,21 @@ public class FederatKlient {
     protected EncoderFactory encoderFactory;     // set when we join
 
     // caches of handle types - set once we join a federation
-    protected ObjectClassHandle sodaHandle;
-    protected AttributeHandle cupsHandle;
-    protected AttributeHandle flavHandle;
-    protected InteractionClassHandle servedHandle;
+    protected ObjectClassHandle KasaHandle;
+    protected AttributeHandle NumerKasyHandle;
+    protected AttributeHandle DlugoscHandle;
+    protected AttributeHandle CzyPelnaHandle;
+    protected AttributeHandle CzyOtwartaHandle;
+    protected ObjectClassHandle KlientHandle;
+    protected AttributeHandle uprzywilejowanyHandle;
+    protected AttributeHandle NumerKolejkiHandle;
+    protected AttributeHandle NumerWKolejceHandle;
+    protected AttributeHandle GotowkaHandle;
+    protected InteractionClassHandle WejscieDoKolejkiHandle;
+    protected InteractionClassHandle RozpoczecieObslugiHandle;
+    protected InteractionClassHandle ZakonczenieObslugiKlientaHandle;
+    protected InteractionClassHandle RozpoczecieSymulacjiHandle;
+    protected InteractionClassHandle ZakonczenieSymulacjiHandle;
 
     //----------------------------------------------------------
     //                      CONSTRUCTORS
@@ -128,12 +139,10 @@ public class FederatKlient {
         try
         {
             URL[] modules = new URL[]{
-                    (new File("foms/RestaurantProcesses.xml")).toURI().toURL(),
-                    (new File("foms/RestaurantFood.xml")).toURI().toURL(),
-                    (new File("foms/RestaurantDrinks.xml")).toURI().toURL()
+                    (new File("foms/ModelFom.xml")).toURI().toURL(),
             };
 
-            rtiamb.createFederationExecution( "ExampleFederation", modules );
+            rtiamb.createFederationExecution( "FederatKlient", modules );
             log( "Created Federation" );
         }
         catch( FederationExecutionAlreadyExists exists )
@@ -151,12 +160,12 @@ public class FederatKlient {
         // 4. join the federation //
         ////////////////////////////
         URL[] joinModules = new URL[]{
-                (new File("foms/RestaurantSoup.xml")).toURI().toURL()
+                (new File("foms/ModelFom.xml")).toURI().toURL()
         };
 
         rtiamb.joinFederationExecution( federateName,            // name for the federate
-                "ExampleFederateType",   // federate type
-                "ExampleFederation",     // name of federation
+                "FederatKlientType",   // federate type
+                "FederatKlient",     // name of federation
                 joinModules );           // modules we want to add
 
         log( "Joined Federation as " + federateName );
@@ -313,50 +322,67 @@ public class FederatKlient {
      */
     private void publishAndSubscribe() throws RTIexception
     {
+
         ///////////////////////////////////////////////
-        // publish all attributes of Food.Drink.Soda //
+        // publish all attributes                    //
         ///////////////////////////////////////////////
         // before we can register instance of the object class Food.Drink.Soda and
         // update the values of the various attributes, we need to tell the RTI
         // that we intend to publish this information
 
         // get all the handle information for the attributes of Food.Drink.Soda
-        this.sodaHandle = rtiamb.getObjectClassHandle( "HLAobjectRoot.Food.Drink.Soda" );
-        this.cupsHandle = rtiamb.getAttributeHandle( sodaHandle, "NumberCups" );
-        this.flavHandle = rtiamb.getAttributeHandle( sodaHandle, "Flavor" );
+        this.KlientHandle = rtiamb.getObjectClassHandle( "HLAobjectRoot.Klient" );
+        this.uprzywilejowanyHandle = rtiamb.getAttributeHandle( KlientHandle, "uprzywilejowany" );
+        this.NumerKolejkiHandle = rtiamb.getAttributeHandle( KlientHandle, "NumerKolejki" );
+        this.NumerWKolejceHandle = rtiamb.getAttributeHandle( KlientHandle, "NumerWKolejce" );
+        this.GotowkaHandle = rtiamb.getAttributeHandle( KlientHandle, "Gotowka" );
         // package the information into a handle set
         AttributeHandleSet attributes = rtiamb.getAttributeHandleSetFactory().create();
-        attributes.add( cupsHandle );
-        attributes.add( flavHandle );
+        attributes.add( uprzywilejowanyHandle );
+        attributes.add( NumerKolejkiHandle );
+        attributes.add( NumerWKolejceHandle );
+        attributes.add( GotowkaHandle );
 
         // do the actual publication
-        rtiamb.publishObjectClassAttributes( sodaHandle, attributes );
+        rtiamb.publishObjectClassAttributes( KlientHandle, attributes );
 
         ////////////////////////////////////////////////////
-        // subscribe to all attributes of Food.Drink.Soda //
+        // subscribe to all attributes                    //
         ////////////////////////////////////////////////////
         // we also want to hear about the same sort of information as it is
         // created and altered in other federates, so we need to subscribe to it
-        rtiamb.subscribeObjectClassAttributes( sodaHandle, attributes );
+        this.KasaHandle = rtiamb.getObjectClassHandle( "HLAobjectRoot.Kasa" );
+        this.NumerKasyHandle = rtiamb.getAttributeHandle( KasaHandle, "NumerKasy" );
+        this.DlugoscHandle = rtiamb.getAttributeHandle( KasaHandle, "Dlugosc" );
+        this.CzyPelnaHandle = rtiamb.getAttributeHandle( KasaHandle, "CzyPelna" );
+        this.CzyOtwartaHandle = rtiamb.getAttributeHandle( KasaHandle, "CzyOtwarta" );
+        // package the information into a handle set
+        AttributeHandleSet attributes2 = rtiamb.getAttributeHandleSetFactory().create();
+        attributes2.add( NumerKasyHandle );
+        attributes2.add( DlugoscHandle );
+        attributes2.add( CzyPelnaHandle );
+        attributes2.add( CzyOtwartaHandle );
+
+        rtiamb.subscribeObjectClassAttributes( KasaHandle, attributes );
 
         //////////////////////////////////////////////////////////
-        // publish the interaction class FoodServed.DrinkServed //
+        // publish the interaction class                        //
         //////////////////////////////////////////////////////////
-        // we want to send interactions of type FoodServed.DrinkServed, so we need
-        // to tell the RTI that we're publishing it first. We don't need to
-        // inform it of the parameters, only the class, making it much simpler
-        String iname = "HLAinteractionRoot.CustomerTransactions.FoodServed.DrinkServed";
-        servedHandle = rtiamb.getInteractionClassHandle( iname );
 
-        // do the publication
-        rtiamb.publishInteractionClass( servedHandle );
+        WejscieDoKolejkiHandle = rtiamb.getInteractionClassHandle("HLAinteractionRoot.WejscieDoKolejki");
+        rtiamb.publishInteractionClass( WejscieDoKolejkiHandle );
+        RozpoczecieObslugiHandle = rtiamb.getInteractionClassHandle("HLAinteractionRoot.RozpoczecieObslugi");
+        rtiamb.publishInteractionClass( RozpoczecieObslugiHandle );
 
         /////////////////////////////////////////////////////////
-        // subscribe to the FoodServed.DrinkServed interaction //
+        // subscribe to the interaction                        //
         /////////////////////////////////////////////////////////
-        // we also want to receive other interaction of the same type that are
-        // sent out by other federates, so we have to subscribe to it first
-        rtiamb.subscribeInteractionClass( servedHandle );
+        ZakonczenieObslugiKlientaHandle = rtiamb.getInteractionClassHandle("HLAinteractionRoot.ZakonczenieObslugiKlienta");
+        rtiamb.subscribeInteractionClass( ZakonczenieObslugiKlientaHandle );
+        ZakonczenieSymulacjiHandle = rtiamb.getInteractionClassHandle("HLAinteractionRoot.ZakonczenieSymulacji");
+        rtiamb.subscribeInteractionClass( ZakonczenieSymulacjiHandle );
+        RozpoczecieSymulacjiHandle = rtiamb.getInteractionClassHandle("HLAinteractionRoot.RozpoczecieSymulacji");
+        rtiamb.subscribeInteractionClass( RozpoczecieSymulacjiHandle );
     }
 
     /**
@@ -366,7 +392,7 @@ public class FederatKlient {
      */
     private ObjectInstanceHandle registerObject() throws RTIexception
     {
-        return rtiamb.registerObjectInstance( sodaHandle );
+        return rtiamb.registerObjectInstance( KlientHandle );
     }
 
     /**
@@ -378,6 +404,7 @@ public class FederatKlient {
      * Note that we don't actually have to update all the attributes at once, we
      * could update them individually, in groups or not at all!
      */
+    /*
     private void updateAttributeValues( ObjectInstanceHandle objectHandle ) throws RTIexception
     {
         ///////////////////////////////////////////////
@@ -423,13 +450,13 @@ public class FederatKlient {
         // send the interaction //
         //////////////////////////
         ParameterHandleValueMap parameters = rtiamb.getParameterHandleValueMapFactory().create(0);
-        rtiamb.sendInteraction( servedHandle, parameters, generateTag() );
+        rtiamb.sendInteraction( RozpoczecieObslugiHandle, parameters, generateTag() );
 
         // if you want to associate a particular timestamp with the
         // interaction, you will have to supply it to the RTI. Here
         // we send another interaction, this time with a timestamp:
         HLAfloat64Time time = timeFactory.makeTime( fedamb.federateTime+fedamb.federateLookahead );
-        rtiamb.sendInteraction( servedHandle, parameters, generateTag(), time );
+        rtiamb.sendInteraction( RozpoczecieObslugiHandle, parameters, generateTag(), time );
     }
 
     /**
@@ -478,7 +505,7 @@ public class FederatKlient {
     public static void main( String[] args )
     {
         // get a federate name, use "exampleFederate" as default
-        String federateName = "exampleFederate";
+        String federateName = "klientFederat";
 
         if( args.length != 0 )
         {
@@ -488,7 +515,7 @@ public class FederatKlient {
         try
         {
             // run the example federate
-            new ExampleFederate().runFederate( federateName );
+            new FederatKlient().runFederate( federateName );
         }
         catch( Exception rtie )
         {

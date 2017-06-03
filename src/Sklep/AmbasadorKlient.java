@@ -225,19 +225,15 @@ public class AmbasadorKlient extends NullFederateAmbassador {
             builder.append( "\tattributeHandle=" );
 
             // if we're dealing with Flavor, decode into the appropriate enum value
-            if( attributeHandle.equals(federate.flavHandle) )
+            if( attributeHandle.equals(federate.DlugoscHandle) )
             {
-                builder.append( attributeHandle );
-                builder.append( " (Flavor)    " );
-                builder.append( ", attributeValue=" );
-                builder.append( decodeFlavor(theAttributes.get(attributeHandle)) );
+                System.out.println(attributeHandle.toString());
+                builder.append( attributeHandle.toString() );
             }
-            else if( attributeHandle.equals(federate.cupsHandle) )
+            else if( attributeHandle.equals(federate.NumerKasyHandle) )
             {
-                builder.append( attributeHandle );
-                builder.append( " (NumberCups)" );
-                builder.append( ", attributeValue=" );
-                builder.append( decodeNumCups(theAttributes.get(attributeHandle)) );
+                System.out.println(attributeHandle.toString());
+                builder.append( attributeHandle.toString() );
             }
             else
             {
@@ -273,6 +269,7 @@ public class AmbasadorKlient extends NullFederateAmbassador {
                 receiveInfo );
     }
 
+    /*
     @Override
     public void receiveInteraction( InteractionClassHandle interactionClass,
                                     ParameterHandleValueMap theParameters,
@@ -319,7 +316,7 @@ public class AmbasadorKlient extends NullFederateAmbassador {
 
         log( builder.toString() );
     }
-
+*/
     @Override
     public void removeObjectInstance( ObjectInstanceHandle theObject,
                                       byte[] tag,
